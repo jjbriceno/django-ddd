@@ -1,6 +1,7 @@
-django>=4.2
-django-ninja>=0.2.0
-pydantic>=2.0
+django>=6.0.4
+django-ninja>=1.6.2
+pydantic>=2.13.0
+email-validator>=2.0
 
 # Testing
 pytest>=8.0

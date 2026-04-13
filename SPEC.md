@@ -62,8 +62,9 @@
 - `GET /api/customers/{id}` - Get customer by ID
 
 ## Technology Stack
-- Django 4.2+
-- Django Ninja (djangoninja)
+- Django 6.0.4
+- Django Ninja 1.6.2
+- Pydantic 2.13.0
 - SQLite (for simplicity)
 - Python 3.10+
 
