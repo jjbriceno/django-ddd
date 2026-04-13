@@ -16,9 +16,25 @@ INSTALLED_APPS = [
     "ddd_project.apps.infrastructure",
 ]
 
-MIDDLEWARE = []
+MIDDLEWARE = [
+    "django.middleware.common.CommonMiddleware",
+]
 
 ROOT_URLCONF = "config.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+            ],
+        },
+    },
+]
 
 DATABASES = {
     "default": {
