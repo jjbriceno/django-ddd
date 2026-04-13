@@ -104,3 +104,93 @@ domain_driven_design/
 8. Layered architecture enforced
 9. Code is readable and educational
 10. Tests demonstrate usage patterns
+
+## Testing
+
+The project includes comprehensive tests demonstrating DDD testing patterns across all layers.
+
+### Test Structure
+
+```
+ddd_project/tests/
+├── conftest.py                 # Shared fixtures (mocks, factories)
+├── domain/                     # Domain Layer Tests (158 total)
+│   ├── test_money.py          # Value object tests
+│   ├── test_address.py
+│   ├── test_order_status.py
+│   ├── test_quantity.py
+│   ├── test_order.py          # Aggregate root tests
+│   ├── test_order_item.py
+│   └── test_customer.py
+├── application/                # Application Layer Tests
+│   ├── test_create_order.py
+│   ├── test_get_order.py
+│   ├── test_list_orders.py
+│   ├── test_confirm_order.py
+│   ├── test_cancel_order.py
+│   └── test_customer_use_cases.py
+└── infrastructure/             # Infrastructure Layer Tests
+    ├── test_order_repository.py
+    └── test_customer_repository.py
+```
+
+### Testing Principles by Layer
+
+| Layer | Test Type | Description | Dependencies |
+|-------|-----------|-------------|--------------|
+| **Domain** | Unit Tests | Pure tests, no external dependencies | None |
+| **Application** | Use Case Tests | Test with mocked repositories | Mock repositories |
+| **Infrastructure** | Integration Tests | Test with actual Django ORM | SQLite test database |
+
+### Domain Layer Testing
+- **Pure unit tests** with no external dependencies
+- Test value object creation, validation, and immutability
+- Test entity business rules and state transitions
+- Test aggregate invariants and domain exceptions
+
+### Application Layer Testing
+- **Mock repositories** for testing use cases in isolation
+- Test correct repository calls with expected parameters
+- Test DTO transformation
+- Verify business logic in use cases
+
+### Infrastructure Layer Testing
+- **pytest-django** with `@pytest.mark.django_db`
+- In-memory SQLite database for tests
+- Test persistence mapping between domain and ORM
+- Test CRUD operations
+
+### Running Tests
+
+```bash
+cd ddd_project
+source venv/bin/activate
+pip install -r requirements.txt
+PYTHONPATH=/home/jorge/Proyectos/django-ddd python -m pytest tests/ -v
+```
+
+### Test Dependencies
+- `pytest>=8.0`
+- `pytest-django>=4.8`
+- `pytest-cov>=4.1`
+- `email-validator` (for Pydantic EmailStr)
+
+### Test Coverage Highlights
+
+**Value Objects**: 100% coverage of validation, operations, and immutability
+
+**Entities**: Tests for:
+- Creation and initialization
+- Business rule enforcement
+- Status transitions
+- Aggregate invariants
+
+**Use Cases**: Tests for:
+- Successful execution paths
+- Error handling (not found, validation errors)
+- Repository interaction verification
+
+**Repositories**: Tests for:
+- CRUD operations
+- Domain-to-ORM mapping
+- Data integrity preservation
