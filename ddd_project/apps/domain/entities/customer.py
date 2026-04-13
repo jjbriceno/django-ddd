@@ -2,19 +2,15 @@
 from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
+
 from .base import BaseEntity
 from ..value_objects import Address
+from ..exceptions import RequiredCustomerNameError, RequiredCustomerEmailError
 
 
 @dataclass
 class Customer(BaseEntity):
-    """Customer entity with identity and address.
-    
-    DDD Principles demonstrated:
-    - Identity: Unique ID generated on creation
-    - Encapsulation: Mutable state with controlled changes
-    - Value objects: Uses Address value object
-    """
+    """Customer entity with identity and address."""
     name: str = ""
     email: str = ""
     address: Address | None = None
@@ -22,9 +18,9 @@ class Customer(BaseEntity):
 
     def __post_init__(self) -> None:
         if not self.name:
-            raise ValueError("Customer name is required")
+            raise RequiredCustomerNameError()
         if not self.email:
-            raise ValueError("Customer email is required")
+            raise RequiredCustomerEmailError()
 
     def update_address(self, new_address: Address) -> None:
         self.address = new_address

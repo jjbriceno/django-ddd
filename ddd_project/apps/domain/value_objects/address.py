@@ -1,18 +1,13 @@
 """Address Value Object - Immutable postal address"""
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional
+
+from ddd_project.apps.domain.exceptions import InvalidAddressError
 
 
 @dataclass(frozen=True, slots=True)
 class Address:
-    """Immutable value object representing a postal address.
-    
-    DDD Principles demonstrated:
-    - Immutable: uses frozen dataclass
-    - Self-validating: ensures required fields are present
-    - Value equality: addresses with same values are equal
-    """
+    """Immutable value object representing a postal address."""
     street: str
     city: str
     state: str
@@ -21,11 +16,11 @@ class Address:
 
     def __post_init__(self) -> None:
         if not self.street:
-            raise ValueError("Street is required")
+            raise InvalidAddressError("Street is required")
         if not self.city:
-            raise ValueError("City is required")
+            raise InvalidAddressError("City is required")
         if not self.country:
-            raise ValueError("Country is required")
+            raise InvalidAddressError("Country is required")
 
     @classmethod
     def create(

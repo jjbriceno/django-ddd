@@ -1,32 +1,30 @@
 """Quantity Value Object - Immutable positive integer"""
 from __future__ import annotations
 from dataclasses import dataclass
-from decimal import Decimal
+
+from ddd_project.apps.domain.exceptions import (
+    InvalidQuantityError,
+    NegativeQuantityError,
+)
 
 
 @dataclass(frozen=True, slots=True)
 class Quantity:
-    """Immutable value object representing a positive integer quantity.
-    
-    DDD Principles demonstrated:
-    - Immutable: uses frozen dataclass
-    - Self-validating: enforces positive values only
-    - Value equality: same values are equal
-    """
+    """Immutable value object representing a positive integer quantity."""
     value: int
 
     def __post_init__(self) -> None:
-        if self.value < 0:
-            raise ValueError("Quantity must be non-negative")
         if not isinstance(self.value, int):
-            raise ValueError("Quantity must be an integer")
+            raise InvalidQuantityError(self.value)
+        if self.value < 0:
+            raise NegativeQuantityError(self.value)
 
     @classmethod
     def create(cls, value: int) -> Quantity:
         if not isinstance(value, int):
-            raise ValueError("Quantity must be an integer")
+            raise InvalidQuantityError(value)
         if value < 0:
-            raise ValueError("Quantity must be non-negative")
+            raise NegativeQuantityError(value)
         return cls(value)
 
     @classmethod
@@ -39,7 +37,7 @@ class Quantity:
     def subtract(self, other: Quantity) -> Quantity:
         result = self.value - other.value
         if result < 0:
-            raise ValueError("Resulting quantity cannot be negative")
+            raise NegativeQuantityError(result)
         return Quantity(result)
 
     def __eq__(self, other: object) -> bool:

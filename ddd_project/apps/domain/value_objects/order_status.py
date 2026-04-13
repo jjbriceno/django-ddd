@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Final
 
+from ddd_project.apps.domain.exceptions import InvalidOrderStatusError
+
 
 class OrderStatusEnum(str, Enum):
     PENDING = "PENDING"
@@ -26,18 +28,12 @@ VALID_TRANSITIONS: Final = {
 
 @dataclass(frozen=True, slots=True)
 class OrderStatus:
-    """Immutable value object representing order status.
-    
-    DDD Principles demonstrated:
-    - Immutable: uses frozen dataclass
-    - Encodes business logic: validates state transitions
-    - Value equality: same status values are equal
-    """
+    """Immutable value object representing order status."""
     value: OrderStatusEnum
 
     def __post_init__(self) -> None:
         if not isinstance(self.value, OrderStatusEnum):
-            raise ValueError(f"Invalid order status: {self.value}")
+            raise InvalidOrderStatusError(self.value)
 
     @classmethod
     def pending(cls) -> OrderStatus:
@@ -68,7 +64,7 @@ class OrderStatus:
         try:
             return cls(OrderStatusEnum(status))
         except ValueError:
-            raise ValueError(f"Invalid status: {status}")
+            raise InvalidOrderStatusError(status)
 
     def can_transition_to(self, new_status: OrderStatus) -> bool:
         return new_status.value in VALID_TRANSITIONS.get(self.value, set())

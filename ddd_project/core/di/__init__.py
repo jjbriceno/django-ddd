@@ -6,17 +6,23 @@ from ddd_project.apps.infrastructure.repositories import (
     DjangoOrderRepository,
     DjangoCustomerRepository,
 )
-from ddd_project.apps.application.services import OrderService, CustomerService
+from ddd_project.apps.application.services.orders import (
+    CreateOrderUseCase,
+    GetOrderUseCase,
+    ListOrdersUseCase,
+    UpdateOrderStatusUseCase,
+    ConfirmOrderUseCase,
+    CancelOrderUseCase,
+)
+from ddd_project.apps.application.services.customers import (
+    CreateCustomerUseCase,
+    GetCustomerUseCase,
+    ListCustomersUseCase,
+)
 
 
 class Container:
-    """Simple dependency injection container.
-    
-    DI Principles:
-    - Centralized wiring of dependencies
-    - Interfaces over implementations
-    - Easy to swap implementations
-    """
+    """Simple dependency injection container."""
     
     @staticmethod
     @lru_cache(maxsize=1)
@@ -28,22 +34,30 @@ class Container:
     def get_customer_repository() -> CustomerRepository:
         return DjangoCustomerRepository()
 
-    @staticmethod
-    def get_order_service() -> OrderService:
-        return OrderService(Container.get_order_repository())
 
-    @staticmethod
-    def get_customer_service() -> CustomerService:
-        return CustomerService(Container.get_customer_repository())
+def get_create_order_use_case() -> CreateOrderUseCase:
+    return CreateOrderUseCase(Container.get_order_repository())
 
+def get_get_order_use_case() -> GetOrderUseCase:
+    return GetOrderUseCase(Container.get_order_repository())
 
-@lru_cache
-def get_order_service() -> OrderService:
-    """Factory function for OrderService - enables Django Ninja DI."""
-    return Container.get_order_service()
+def get_list_orders_use_case() -> ListOrdersUseCase:
+    return ListOrdersUseCase(Container.get_order_repository())
 
+def get_update_order_status_use_case() -> UpdateOrderStatusUseCase:
+    return UpdateOrderStatusUseCase(Container.get_order_repository())
 
-@lru_cache
-def get_customer_service() -> CustomerService:
-    """Factory function for CustomerService - enables Django Ninja DI."""
-    return Container.get_customer_service()
+def get_confirm_order_use_case() -> ConfirmOrderUseCase:
+    return ConfirmOrderUseCase(Container.get_order_repository())
+
+def get_cancel_order_use_case() -> CancelOrderUseCase:
+    return CancelOrderUseCase(Container.get_order_repository())
+
+def get_create_customer_use_case() -> CreateCustomerUseCase:
+    return CreateCustomerUseCase(Container.get_customer_repository())
+
+def get_get_customer_use_case() -> GetCustomerUseCase:
+    return GetCustomerUseCase(Container.get_customer_repository())
+
+def get_list_customers_use_case() -> ListCustomersUseCase:
+    return ListCustomersUseCase(Container.get_customer_repository())

@@ -4,27 +4,27 @@ from dataclasses import dataclass
 from decimal import Decimal
 from typing import Final
 
+from ddd_project.apps.domain.exceptions import (
+    InvalidCurrencyError,
+    NegativeMoneyError,
+    MoneyOperationError,
+)
+
 
 SUPPORTED_CURRENCIES: Final = {"USD", "EUR", "GBP"}
 
 
 @dataclass(frozen=True, slots=True)
 class Money:
-    """Immutable value object representing monetary value.
-    
-    DDD Principles demonstrated:
-    - Immutable: once created, cannot be modified
-    - Self-validating: enforces positive amounts and valid currencies
-    - Value equality: two Money objects with same value are equal
-    """
+    """Immutable value object representing monetary value."""
     amount: Decimal
     currency: str
 
     def __post_init__(self) -> None:
         if self.currency not in SUPPORTED_CURRENCIES:
-            raise ValueError(f"Currency must be one of {SUPPORTED_CURRENCIES}")
+            raise InvalidCurrencyError(self.currency)
         if self.amount < 0:
-            raise ValueError("Money amount cannot be negative")
+            raise NegativeMoneyError(self.amount)
 
     @classmethod
     def create(cls, amount: float | Decimal | int, currency: str) -> Money:
@@ -36,7 +36,7 @@ class Money:
 
     def add(self, other: Money) -> Money:
         if self.currency != other.currency:
-            raise ValueError(f"Cannot add {other.currency} to {self.currency}")
+            raise MoneyOperationError("add")
         return Money(self.amount + other.amount, self.currency)
 
     def multiply(self, factor: Decimal | int | float) -> Money:
